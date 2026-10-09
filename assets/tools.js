@@ -28,7 +28,7 @@ options: [
 ["drives", "Losing days to long drives"],
 ["places", "Picking the wrong places"],
 ["rain", "Rain ruining the plans"],
-["prices", "Getting stung on prices"],
+["prices", "Hidden costs"],
 ["kids", "Bored or worn-out kids"]
 ]
 },
@@ -44,7 +44,7 @@ options: [
 };
 var PAIN_ECHO = {
 drives: "losing days in the car", places: "picking the wrong places", rain: "rain ruining the plans",
-prices: "getting stung on prices", kids: "bored or worn-out kids", targets: "missing the birds you came for",
+prices: "hidden costs", kids: "bored or worn-out kids", targets: "missing the birds you came for",
 lodges: "picking the wrong lodges"
 };
 var LEN_TIP = {
@@ -57,7 +57,7 @@ var PAIN_TIP = {
 drives: "Arenal and Monteverde look close on a map, but by road they're about 3 to 4 hours apart. A jeep, boat and jeep transfer across Lake Arenal cuts the driving.",
 places: "Pick your coast by your month. The Pacific side's dry season runs roughly December to April. In September and October the Caribbean side is usually the drier one.",
 rain: "In the green season, roughly May to November, mornings are usually the clearest and the rain tends to come in the afternoon. Put the hikes and wildlife first thing and save the hot springs for later.",
-prices: "Third-party liability insurance is required by law on Costa Rica car hire and often isn't in the price you see online. Compare totals with it included, not the headline price.",
+prices: "Third-party liability insurance is required by law on Costa Rica rental cars and often isn't in the price you see online. Compare totals with it included, not the headline price.",
 kids: "Keep single drives to about 3 hours and stay at least 3 nights in each place. Kids cope with one big travel day far better than three medium ones.",
 targets: "Costa Rica's birds sort themselves by elevation. Quetzals need cloud forest or highlands, Scarlet Macaws the Pacific lowlands. A route that climbs and drops on purpose sees far more.",
 lodges: "Some lodges famous for their feeders are a long drive from the trails you want. Judge a lodge by what's outside the door at 5:30am, not by its photos."
@@ -224,6 +224,7 @@ var hh = h % 12 === 0 ? 12 : h % 12;
 return hh + (m ? ":" + (m < 10 ? "0" : "") + m : "") + ap;
 }
 if (checker) {
+var birdMode = new URLSearchParams(location.search).get("for") === "birding";
 var listEl = checker.querySelector("[data-stops]");
 var arrive = checker.querySelector("[data-arrive]");
 var depart = checker.querySelector("[data-depart]");
@@ -273,7 +274,7 @@ function encodeRoute() {
 var s = readStops();
 var r = [arrive.value].concat(s.map(function (x) { return x.code + x.n; })).concat([depart.value]).join("-");
 var m = monthEl.value;
-return "r=" + r + (m ? "&m=" + m : "");
+return "r=" + r + (m ? "&m=" + m : "") + (birdMode ? "&for=birding" : "");
 }
 function decodeRoute(q) {
 var p = new URLSearchParams(q);
@@ -302,7 +303,7 @@ if (t.hasAttribute("data-up") && li.previousElementSibling) listEl.insertBefore(
 if (t.hasAttribute("data-down") && li.nextElementSibling) listEl.insertBefore(li.nextElementSibling, li);
 if (t.hasAttribute("data-remove")) { li.parentNode.removeChild(li); if (!listEl.children.length) stopRow("", 2); }
 if (t.hasAttribute("data-add")) { stopRow("", 2); listEl.lastChild.querySelector("select").focus(); }
-if (t.hasAttribute("data-template")) { var tp = TEMPLATES[t.getAttribute("data-template")]; load(tp.s, tp.a, tp.d); run(); }
+if (t.hasAttribute("data-template")) { var tk = t.getAttribute("data-template"); birdMode = tk === "birding"; var tp = TEMPLATES[tk]; load(tp.s, tp.a, tp.d); run(); }
 if (t.hasAttribute("data-run")) run();
 });
 function bestOrder(stops, a, d) {
@@ -383,7 +384,7 @@ if (pair === "FORMON" || pair === "MONFOR") good.push("Between La Fortuna and Mo
 if (has("MA")) good.push("Manuel Antonio National Park is closed on Tuesdays, and tickets are online only with a daily cap. Book your day before you go.");
 if (has("TOR")) good.push("There are no roads into Tortuguero. You leave the car or shuttle at the dock and go in by boat, so plan two nights at least.");
 if (has("STT")) good.push("From the Central Pacific, the quickest way to Santa Teresa is usually the Puntarenas car ferry. It can sell out at busy times, so book it.");
-if (has("SGD")) good.push("San Gerardo de Dota sits around 2,000 metres up. Nights are properly cold, so pack layers.");
+if (has("SGD")) good.push("San Gerardo de Dota sits about 2,200 metres up. Nights are cold, near freezing some mornings, so pack layers.");
 if (has("DRA")) good.push("Most people reach Drake Bay by driving to Sierpe and taking a boat, so the journey in takes most of a day. Corcovado needs a certified guide.");
 if (has("BIJ")) good.push("Río Celeste's famous blue water can turn cloudy after heavy rain. Give yourself a flexible morning there if you can.");
 if (has("PV") && hasAny(["MA", "TAM", "STT", "NOS", "UVI", "SAM", "COC", "JAC", "DRA"]) && nights <= 12)
@@ -462,11 +463,14 @@ betterHtml = '<div class="better"><p class="tag">Same stops, less driving</p><p>
 var note = "My route: " + routeText + (month ? ", travelling in " + MONTHS[month - 1] : "") + ". The checker gave it " + score + "/10.";
 var lenCode = nights <= 7 ? "7" : nights <= 14 ? "14" : "15";
 var cta;
-if (level === "good") {
+if (birdMode) {
+cta = "<h3>Want it planned around your target birds?</h3><p>A birding plan turns this into the real thing: lodges with birding on the doorstep, which local guides to book, mornings kept free for birding, and every booking link. For this trip it's " + price(nights <= 7 ? 229 : nights <= 14 ? 269 : 319) + ".</p>" +
+'<div class="btn-row"><a class="btn" href="birding.html?plan=birding&len=' + lenCode + "&note=" + encodeURIComponent(note) + '#form">Plan my birding trip</a></div>';
+} else if (level === "good") {
 cta = "<h3>Want it turned into the real thing?</h3><p>A trip plan takes your route and adds where to stay each night, what to do each day, rain backups and every booking link, in the order to book them.</p>" +
 '<div class="btn-row"><a class="btn" href="plan.html?plan=trip&len=' + lenCode + "&note=" + encodeURIComponent(note) + '#form">Build my plan from this</a></div>';
 } else {
-cta = "<h3>Want me to fix it?</h3><p>Send me this route and I'll check it properly: the order, the drives, where to stay, and what to book first. An itinerary check is " + price(59) + ", and your route goes over with it, so there's nothing to type again.</p>" +
+cta = "<h3>Want me to fix it?</h3><p>Send me this route and I'll go through it: the order, the drives, where to stay, and what to book first. An itinerary check is " + price(59) + ", and your route goes over with it, so there's nothing to type again.</p>" +
 '<div class="btn-row"><a class="btn" href="plan.html?plan=check&note=' + encodeURIComponent(note) + '#form">Get my route checked</a></div>' +
 '<p class="chooser-alt">Or <a href="plan.html?plan=trip&len=' + lenCode + "&note=" + encodeURIComponent(note) + '#form">have me plan the whole trip</a> instead.</p>';
 }
@@ -523,7 +527,7 @@ var BIRDS = [
 ["The big ones", [
 ["quetzal", "Resplendent Quetzal", ["SGD", "MON"], "Best February to May, when they're nesting. San Gerardo de Dota is the most reliable place."],
 ["bellbird", "Three-wattled Bellbird", ["MON"], "Easiest at Monteverde roughly March to June. Later in the year many move down to lower elevations."],
-["scarlet", "Scarlet Macaw", ["JAC", "MA", "DRA"], "Carara National Park, near Jacó, and the Osa Peninsula are the classic places."],
+["scarlet", "Scarlet Macaw", ["JAC", "MA", "UVI", "DRA"], "Carara National Park, near Jacó, and the Osa Peninsula are the classic places, and they turn up along much of the southern Pacific coast."],
 ["greatgreen", "Great Green Macaw", ["SAR"], "Scarce. The Sarapiquí lowlands are your best chance, and a local guide helps a lot."],
 ["keelbilled", "Keel-billed Toucan", ["SAR", "FOR", "TOR", "PV"], ""],
 ["yellowthroated", "Yellow-throated Toucan", ["SAR", "TOR", "MA", "UVI", "DRA"], ""]
@@ -532,7 +536,7 @@ var BIRDS = [
 ["fierythroated", "Fiery-throated Hummingbird", ["SGD"], "A highland bird. San Gerardo de Dota lodge feeders are reliable."],
 ["talamanca", "Talamanca Hummingbird", ["SGD"], ""],
 ["volcanohb", "Volcano Hummingbird", ["SGD"], ""],
-["snowcap", "Snowcap", ["FOR", "SAR"], "Caribbean foothills. Ask locally where the flowers it likes are blooming."]
+["snowcap", "Snowcap", ["FOR"], "Caribbean foothills. Lodges on the slopes around Arenal with the right flowers are a good bet."]
 ]],
 ["Highland specialists", [
 ["junco", "Volcano Junco", ["SGD"], "Near the summit of Cerro de la Muerte, a short drive up from San Gerardo de Dota."],
@@ -540,8 +544,8 @@ var BIRDS = [
 ["silky", "Long-tailed Silky-flycatcher", ["SGD"], ""],
 ["blackguan", "Black Guan", ["SGD", "MON"], ""],
 ["redstart", "Collared Redstart", ["SGD", "MON"], ""],
-["toucanet", "Emerald Toucanet", ["MON", "SGD"], ""],
-["orangetrogon", "Orange-bellied Trogon", ["MON"], ""]
+["toucanet", "Northern Emerald-Toucanet", ["MON", "SGD"], ""],
+["orangetrogon", "Collared Trogon (orange-bellied form)", ["MON"], "The orange-bellied form is now treated as a Collared Trogon. Monteverde is a good place for it."]
 ]],
 ["South Pacific specials", [
 ["fierybilled", "Fiery-billed Aracari", ["MA", "UVI", "DRA"], "Only found on the southern Pacific side."],
@@ -560,7 +564,7 @@ var BIRDS = [
 ];
 var BAND = { SGD: "Highlands, about 2,200 metres", MON: "Cloud forest, about 1,400 metres", FOR: "Caribbean foothills", SAR: "Caribbean lowlands", TOR: "Caribbean lowlands and canals", PV: "Caribbean coast", JAC: "Central Pacific lowlands (for Carara)", MA: "Central Pacific lowlands", UVI: "South Pacific lowlands", DRA: "Osa Peninsula", RIN: "Dry forest, northwest", TAM: "Dry northwest coast", COC: "Dry northwest coast", SAM: "Nicoya coast", NOS: "Nicoya coast" };
 var NIGHTS = { SGD: 3, MON: 3, SAR: 3, DRA: 3, FOR: 2, UVI: 2, MA: 2, JAC: 2, RIN: 2, TAM: 2, TOR: 2, PV: 2, COC: 2, SAM: 2, NOS: 2 };
-var PREF = ["SGD", "MON", "SAR", "DRA", "FOR", "UVI", "MA", "JAC", "RIN", "TOR", "TAM", "PV", "COC", "SAM", "NOS"];
+var PREF = ["SGD", "MON", "SAR", "FOR", "MA", "UVI", "JAC", "RIN", "TOR", "TAM", "PV", "COC", "SAM", "NOS", "DRA"];
 var INDEX = {}, assign = {};
 BIRDS.forEach(function (g) { g[1].forEach(function (b) { INDEX[b[0]] = b; }); });
 var grid = finder.querySelector("[data-birds]");
@@ -602,7 +606,7 @@ return { s: best, h: bestH };
 }
 function show(fromLoad) {
 var ids = picked();
-if (!ids.length) { fout.hidden = false; fout.innerHTML = '<p class="form-error">Tick at least one bird you want to see.</p>'; return; }
+if (!ids.length) { fout.hidden = false; fout.innerHTML = '<p class="form-error">Pick at least one bird you want to see.</p>'; return; }
 var stops = cover(ids);
 var a = order(stops, "SJO"), b = order(stops, "LIR");
 var ap = b.h + 0.5 < a.h ? "LIR" : "SJO";
@@ -621,13 +625,16 @@ var r = [ap].concat(route.s.map(function (c) { return c + NIGHTS[c]; })).concat(
 var names = ids.map(function (id) { return INDEX[id][1]; });
 var note = "Target birds: " + names.join(", ") + ". The bird finder suggested: " + route.s.map(function (c) { return SHORT[c]; }).join(", ") + ".";
 var lenCode = nights <= 7 ? "7" : nights <= 14 ? "14" : "15";
-var seasonal = ids.indexOf("quetzal") > -1 || ids.indexOf("bellbird") > -1;
+var seasonBits = [];
+if (ids.indexOf("quetzal") > -1) seasonBits.push("quetzals are easiest February to May");
+if (ids.indexOf("bellbird") > -1) seasonBits.push("bellbirds at Monteverde are easiest roughly March to June");
+var seasonal = seasonBits.length > 0;
 fout.hidden = false;
 fout.innerHTML =
 '<div class="verdict v-good"><div class="score"><b>' + route.s.length + '</b><span>&nbsp;' + (route.s.length === 1 ? "stop" : "stops") + '</span></div><div><p class="verdict-title">Your ' + ids.length + (ids.length === 1 ? " bird needs " : " birds need ") + route.s.length + (route.s.length === 1 ? " stop." : " stops.") + "</p><p>About " + nights + " nights, flying in and out of " + P[ap] + ", with roughly " + fmtH(route.h) + " of driving between them.</p></div></div>" +
-(seasonal ? '<p class="bird-season">Timing matters for some of your birds: quetzals are easiest February to May, and bellbirds at Monteverde roughly March to June.</p>' : "") +
+(seasonal ? '<p class="bird-season">Timing matters: ' + seasonBits.join(", and ") + ".</p>" : "") +
 '<ol class="bird-stops">' + cards + "</ol>" +
-'<div class="btn-row"><a class="btn secondary" href="check.html?' + "r=" + r + '">See it as a route, with drive times</a><button type="button" class="btn secondary" data-fshare>Share my bird list</button><span class="share-msg" aria-live="polite"></span></div>' +
+'<div class="btn-row"><a class="btn secondary" href="check.html?' + "r=" + r + '&for=birding">See it as a route, with drive times</a><button type="button" class="btn secondary" data-fshare>Share my bird list</button><span class="share-msg" aria-live="polite"></span></div>' +
 '<div class="callout"><h3>Want it planned properly?</h3><p>A birding plan turns this into the real thing: lodges with birding on the doorstep, which local guides to book for your targets, mornings kept free for birding, and every booking link. For your trip it\'s ' + price(nights <= 7 ? 229 : nights <= 14 ? 269 : 319) + '.</p><div class="btn-row"><a class="btn" href="birding.html?plan=birding&len=' + lenCode + "&note=" + encodeURIComponent(note) + '#form">Plan my birding trip around these</a></div></div>' +
 '<p class="price-note" style="margin-top:1.5rem">Where birds turn up changes with season, weather and luck. This shows where your chances are best, not a guarantee.</p>';
 refreshPrices();

@@ -5,7 +5,7 @@ var footEl = document.getElementById("site-foot");
 var ctaHref = (footEl && footEl.getAttribute("data-cta")) || "plan.html#form";
 var ctaLabel = (footEl && footEl.getAttribute("data-cta-label")) || "Start my trip plan";
 var links = [
-["plan.html", "Holiday trips"],
+["plan.html", "Trip plans"],
 ["route.html", "Free 10-day route"],
 ["check.html", "Route checker"],
 ["birding.html", "Birding trips"],
@@ -32,11 +32,12 @@ headSlot.outerHTML =
 var footSlot = document.getElementById("site-foot");
 if (footSlot) {
 var noSticky = footSlot.hasAttribute("data-no-sticky");
+if (noSticky) document.body.classList.add("no-sticky");
 footSlot.outerHTML =
 '<footer class="site-foot"><div class="wrap"><div class="foot-grid">' +
 "<div><h2>Wander Latam</h2><p>Trip plans and guides for people who only get one shot at this trip. " +
 'Questions? Send them through the <a href="plan.html#form">trip form</a> and I\'ll reply within 48 hours.</p></div>' +
-'<div><h2>Plan</h2><ul><li><a href="plan.html">Holiday trips</a></li><li><a href="birding.html">Birding trips</a></li>' +
+'<div><h2>Plan</h2><ul><li><a href="plan.html">Trip plans</a></li><li><a href="birding.html">Birding trips</a></li>' +
 '<li><a href="route.html">Free 10-day route</a></li><li><a href="check.html">Route checker</a></li><li><a href="guides.html">Guides</a></li></ul></div>' +
 '<div><h2>The small print</h2><ul><li><a href="refunds.html">Refund policy</a></li><li><a href="terms.html">Terms</a></li>' +
 '<li><a href="privacy.html">Privacy</a></li></ul></div></div>' +
@@ -317,7 +318,7 @@ pay +
 .catch(function () {
 button.disabled = false;
 button.textContent = "Send my trip details";
-errorBox.textContent = "Your details didn't send. Check your connection and press Send again. Nothing you typed has been lost.";
+errorBox.textContent = "Your details didn't send. Please press Send again in a moment. Nothing you typed has been lost.";
 });
 });
 showStep(0);
