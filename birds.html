@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Costa Rica Target Bird Finder: Where to See Each Bird | Wander Latam</title>
+<meta name="description" content="Free Costa Rica bird finder. Tick the birds you want to see and get the fewest stops that cover them, the best months, and a route you can check.">
+<meta property="og:title" content="Costa Rica Target Bird Finder: Where to See Each Bird | Wander Latam">
+<meta property="og:description" content="Free Costa Rica bird finder. Tick the birds you want to see and get the fewest stops that cover them, the best months, and a route you can check.">
+<meta name="theme-color" content="#123d2e">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+<script src="assets/tools.js" defer></script>
+</head>
+<body class="birding">
+<div id="site-head"></div>
+<main id="main">
+<nav class="subnav" aria-label="Birding"><div class="wrap"><span class="subnav-label">Birding</span><a href="birding.html">Birding plans</a><a href="birding.html#day">A birding day</a><a href="birds.html" aria-current="page">Bird finder</a><a href="birding.html#prices">Prices</a><a href="birding-guide.html">The guide</a><a href="check.html?r=SJO-SAR3-FOR2-MON3-JAC2-SGD3-SJO">A birding route</a><a href="birding.html#faq">Questions</a></div></nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <h1>Which birds do you want to see?</h1>
+    <p class="lead">Tick your target birds. You'll see the fewest stops that cover them all, the best months for the tricky ones, and a rough route you can check. Free, and no email needed.</p>
+  </div>
+</section>
+<section style="padding-top:0.5rem">
+  <div class="wrap">
+    <div class="checker finder" id="finder">
+      <div data-birds></div>
+      <div class="btn-row"><button type="button" class="btn" data-find>Show me where to go</button><button type="button" class="chooser-back" style="padding:0" data-clear>Clear</button></div>
+      <noscript><p class="form-error">The bird finder needs JavaScript switched on. You can still <a href="birding.html#form">send me your target list</a>.</p></noscript>
+    </div>
+    <div id="finder-result" class="checker-result" aria-live="polite" hidden></div>
+    <p class="price-note" style="margin-top:2rem;max-width:44rem">A starting point for the most-wanted birds of a first or second Costa Rica trip, not a full checklist. Send me your full target list and I'll plan around every one.</p>
+  </div>
+</section>
+</main>
+<div id="site-foot" data-no-sticky></div>
+</body>
+</html>

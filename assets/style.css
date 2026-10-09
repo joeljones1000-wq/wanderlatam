@@ -801,3 +801,19 @@ body.birding .lead{font-size:1.32rem}
 body.birding .price-note,body.birding .hint{font-size:1.02rem}
 body.birding .choice span,body.birding .field input,body.birding .field select,body.birding .field textarea{font-size:1.12rem}
 .trust-line{font-family:var(--display);font-weight:600;color:var(--moss);margin-top:1.2rem}
+.bird-group{border:0;padding:0;margin:0 0 1.3rem}
+.bird-group legend{font:700 1rem var(--display);color:var(--moss);margin-bottom:0.5rem;padding:0}
+.bird-group{display:flex;flex-wrap:wrap;gap:0.45rem}
+.bird{display:inline-flex;align-items:center;gap:0.45rem;border:1.5px solid var(--line);border-radius:999px;padding:0.45rem 0.85rem;cursor:pointer;background:#fff;font:600 0.98rem var(--display);color:var(--ink)}
+.bird input{width:1.05rem;height:1.05rem;accent-color:var(--moss);margin:0}
+.bird:has(input:checked){border-color:var(--moss);background:var(--mist)}
+.bird-stops{list-style:none;padding:0;margin:1.4rem 0;display:grid;gap:1rem}
+.bird-stop{background:#fff;border:1px solid var(--line);border-left:6px solid var(--toucan);border-radius:12px;padding:1rem 1.1rem}
+.bird-stop h3{margin:0.1rem 0 0.2rem}
+.bird-stop .nights{font:700 0.9rem var(--display);color:var(--moss);margin:0}
+.band-line{color:var(--muted);margin:0 0 0.5rem;font-size:1rem}
+.bird-list{margin:0 0 0.4rem;padding-left:1.2rem}
+.bird-notes{font-size:1rem;color:var(--muted);margin:0}
+.bird-season{background:#fff6dc;border-left:5px solid var(--toucan);padding:0.8rem 1rem;border-radius:0 10px 10px 0;margin:0 0 1rem}
+.finder-plug{background:#fff;border:1.5px dashed var(--moss);border-radius:12px;padding:0.8rem 1rem;max-width:36rem}
+.score span{text-transform:none}

@@ -151,7 +151,6 @@ next();
 next();
 }
 var checker = document.getElementById("checker");
-if (checker) {
 var P = {
 SJO: "San José airport", LIR: "Liberia airport", FOR: "La Fortuna (Arenal)", MON: "Monteverde",
 MA: "Manuel Antonio", JAC: "Jacó", UVI: "Uvita and Dominical", SGD: "San Gerardo de Dota",
@@ -224,6 +223,7 @@ var ap = h >= 12 ? "pm" : "am";
 var hh = h % 12 === 0 ? 12 : h % 12;
 return hh + (m ? ":" + (m < 10 ? "0" : "") + m : "") + ap;
 }
+if (checker) {
 var listEl = checker.querySelector("[data-stops]");
 var arrive = checker.querySelector("[data-arrive]");
 var depart = checker.querySelector("[data-depart]");
@@ -516,5 +516,143 @@ msg.textContent = url;
 });
 if (!decodeRoute(location.search)) stopRow("", 3);
 else run(true);
+}
+var finder = document.getElementById("finder");
+if (finder) {
+var BIRDS = [
+["The big ones", [
+["quetzal", "Resplendent Quetzal", ["SGD", "MON"], "Best February to May, when they're nesting. San Gerardo de Dota is the most reliable place."],
+["bellbird", "Three-wattled Bellbird", ["MON"], "Easiest at Monteverde roughly March to June. Later in the year many move down to lower elevations."],
+["scarlet", "Scarlet Macaw", ["JAC", "MA", "DRA"], "Carara National Park, near Jacó, and the Osa Peninsula are the classic places."],
+["greatgreen", "Great Green Macaw", ["SAR"], "Scarce. The Sarapiquí lowlands are your best chance, and a local guide helps a lot."],
+["keelbilled", "Keel-billed Toucan", ["SAR", "FOR", "TOR", "PV"], ""],
+["yellowthroated", "Yellow-throated Toucan", ["SAR", "TOR", "MA", "UVI", "DRA"], ""]
+]],
+["Hummingbirds", [
+["fierythroated", "Fiery-throated Hummingbird", ["SGD"], "A highland bird. San Gerardo de Dota lodge feeders are reliable."],
+["talamanca", "Talamanca Hummingbird", ["SGD"], ""],
+["volcanohb", "Volcano Hummingbird", ["SGD"], ""],
+["snowcap", "Snowcap", ["FOR", "SAR"], "Caribbean foothills. Ask locally where the flowers it likes are blooming."]
+]],
+["Highland specialists", [
+["junco", "Volcano Junco", ["SGD"], "Near the summit of Cerro de la Muerte, a short drive up from San Gerardo de Dota."],
+["timberline", "Timberline Wren", ["SGD"], "Near the summit of Cerro de la Muerte, in the open páramo."],
+["silky", "Long-tailed Silky-flycatcher", ["SGD"], ""],
+["blackguan", "Black Guan", ["SGD", "MON"], ""],
+["redstart", "Collared Redstart", ["SGD", "MON"], ""],
+["toucanet", "Emerald Toucanet", ["MON", "SGD"], ""],
+["orangetrogon", "Orange-bellied Trogon", ["MON"], ""]
+]],
+["South Pacific specials", [
+["fierybilled", "Fiery-billed Aracari", ["MA", "UVI", "DRA"], "Only found on the southern Pacific side."],
+["cotinga", "Turquoise Cotinga", ["UVI", "DRA"], "Often perched high on bare branches in the southern Pacific lowlands."],
+["bairds", "Baird's Trogon", ["UVI", "DRA"], ""],
+["antanager", "Black-cheeked Ant-Tanager", ["DRA"], "Found only in Costa Rica, on and around the Osa Peninsula."]
+]],
+["Dry northwest", [
+["motmot", "Turquoise-browed Motmot", ["RIN", "TAM", "COC"], ""],
+["magpiejay", "White-throated Magpie-Jay", ["RIN", "TAM", "COC", "SAM", "NOS"], ""]
+]],
+["Rivers and wetlands", [
+["sunbittern", "Sunbittern", ["FOR", "SAR"], "Along forest rivers. Ask a local guide where it's been seen lately."],
+["agami", "Agami Heron", ["TOR"], "Shy and secretive. A guided canal trip in Tortuguero gives you a chance."]
+]]
+];
+var BAND = { SGD: "Highlands, about 2,200 metres", MON: "Cloud forest, about 1,400 metres", FOR: "Caribbean foothills", SAR: "Caribbean lowlands", TOR: "Caribbean lowlands and canals", PV: "Caribbean coast", JAC: "Central Pacific lowlands (for Carara)", MA: "Central Pacific lowlands", UVI: "South Pacific lowlands", DRA: "Osa Peninsula", RIN: "Dry forest, northwest", TAM: "Dry northwest coast", COC: "Dry northwest coast", SAM: "Nicoya coast", NOS: "Nicoya coast" };
+var NIGHTS = { SGD: 3, MON: 3, SAR: 3, DRA: 3, FOR: 2, UVI: 2, MA: 2, JAC: 2, RIN: 2, TAM: 2, TOR: 2, PV: 2, COC: 2, SAM: 2, NOS: 2 };
+var PREF = ["SGD", "MON", "SAR", "DRA", "FOR", "UVI", "MA", "JAC", "RIN", "TOR", "TAM", "PV", "COC", "SAM", "NOS"];
+var INDEX = {}, assign = {};
+BIRDS.forEach(function (g) { g[1].forEach(function (b) { INDEX[b[0]] = b; }); });
+var grid = finder.querySelector("[data-birds]");
+var fout = document.getElementById("finder-result");
+grid.innerHTML = BIRDS.map(function (g) {
+return '<fieldset class="bird-group"><legend>' + g[0] + "</legend>" + g[1].map(function (b) {
+return '<label class="bird"><input type="checkbox" value="' + b[0] + '"><span>' + b[1] + "</span></label>";
+}).join("") + "</fieldset>";
+}).join("");
+function picked() {
+return Array.prototype.slice.call(grid.querySelectorAll("input:checked")).map(function (i) { return i.value; });
+}
+function cover(ids) {
+var left = ids.slice(), stops = [];
+assign = {};
+while (left.length) {
+var best = null, bestN = 0;
+PREF.forEach(function (st) {
+var n = left.filter(function (id) { return INDEX[id][2].indexOf(st) > -1; }).length;
+if (n > bestN) { bestN = n; best = st; }
+});
+if (!best) break;
+stops.push(best);
+left.forEach(function (id) { if (INDEX[id][2].indexOf(best) > -1) assign[id] = best; });
+left = left.filter(function (id) { return INDEX[id][2].indexOf(best) < 0; });
+}
+return stops;
+}
+function order(stops, ap) {
+if (stops.length < 2) return { s: stops, h: stops.length ? hrs(ap, stops[0]) + hrs(stops[0], ap) : 0 };
+var best = null, bestH = Infinity;
+function tot(arr) { var h = 0, prev = ap; arr.forEach(function (c) { h += hrs(prev, c); prev = c; }); return h + hrs(prev, ap); }
+function perm(arr, k) {
+if (k === arr.length) { var h = tot(arr); if (h < bestH) { bestH = h; best = arr.slice(); } return; }
+for (var i = k; i < arr.length; i++) { var t = arr[k]; arr[k] = arr[i]; arr[i] = t; perm(arr, k + 1); t = arr[k]; arr[k] = arr[i]; arr[i] = t; }
+}
+perm(stops.slice(), 0);
+return { s: best, h: bestH };
+}
+function show(fromLoad) {
+var ids = picked();
+if (!ids.length) { fout.hidden = false; fout.innerHTML = '<p class="form-error">Tick at least one bird you want to see.</p>'; return; }
+var stops = cover(ids);
+var a = order(stops, "SJO"), b = order(stops, "LIR");
+var ap = b.h + 0.5 < a.h ? "LIR" : "SJO";
+var route = ap === "LIR" ? b : a;
+var nights = route.s.reduce(function (n, c) { return n + NIGHTS[c]; }, 0);
+var cards = route.s.map(function (st, i) {
+var here = ids.filter(function (id) { return assign[id] === st; });
+var also = ids.filter(function (id) { return assign[id] !== st && INDEX[id][2].indexOf(st) > -1; });
+var notes = here.map(function (id) { return INDEX[id][3]; }).filter(function (n) { return n; });
+return '<li class="bird-stop"><p class="nights">Stop ' + (i + 1) + " · " + NIGHTS[st] + " nights suggested</p><h3>" + P[st] + '</h3><p class="band-line">' + BAND[st] + "</p>" +
+'<ul class="bird-list">' + here.map(function (id) { return "<li>" + INDEX[id][1] + "</li>"; }).join("") + "</ul>" +
+(also.length ? '<p class="bird-notes">Another chance here for: ' + also.map(function (id) { return INDEX[id][1]; }).join(", ") + ".</p>" : "") +
+(notes.length ? '<p class="bird-notes">' + notes.join(" ") + "</p>" : "") + "</li>";
+}).join("");
+var r = [ap].concat(route.s.map(function (c) { return c + NIGHTS[c]; })).concat([ap]).join("-");
+var names = ids.map(function (id) { return INDEX[id][1]; });
+var note = "Target birds: " + names.join(", ") + ". The bird finder suggested: " + route.s.map(function (c) { return SHORT[c]; }).join(", ") + ".";
+var lenCode = nights <= 7 ? "7" : nights <= 14 ? "14" : "15";
+var seasonal = ids.indexOf("quetzal") > -1 || ids.indexOf("bellbird") > -1;
+fout.hidden = false;
+fout.innerHTML =
+'<div class="verdict v-good"><div class="score"><b>' + route.s.length + '</b><span>&nbsp;' + (route.s.length === 1 ? "stop" : "stops") + '</span></div><div><p class="verdict-title">Your ' + ids.length + (ids.length === 1 ? " bird needs " : " birds need ") + route.s.length + (route.s.length === 1 ? " stop." : " stops.") + "</p><p>About " + nights + " nights, flying in and out of " + P[ap] + ", with roughly " + fmtH(route.h) + " of driving between them.</p></div></div>" +
+(seasonal ? '<p class="bird-season">Timing matters for some of your birds: quetzals are easiest February to May, and bellbirds at Monteverde roughly March to June.</p>' : "") +
+'<ol class="bird-stops">' + cards + "</ol>" +
+'<div class="btn-row"><a class="btn secondary" href="check.html?' + "r=" + r + '">See it as a route, with drive times</a><button type="button" class="btn secondary" data-fshare>Share my bird list</button><span class="share-msg" aria-live="polite"></span></div>' +
+'<div class="callout"><h3>Want it planned properly?</h3><p>A birding plan turns this into the real thing: lodges with birding on the doorstep, which local guides to book for your targets, mornings kept free for birding, and every booking link. For your trip it\'s ' + price(nights <= 7 ? 229 : nights <= 14 ? 269 : 319) + '.</p><div class="btn-row"><a class="btn" href="birding.html?plan=birding&len=' + lenCode + "&note=" + encodeURIComponent(note) + '#form">Plan my birding trip around these</a></div></div>' +
+'<p class="price-note" style="margin-top:1.5rem">Where birds turn up changes with season, weather and luck. This shows where your chances are best, not a guarantee.</p>';
+refreshPrices();
+try { history.replaceState(null, "", "?b=" + ids.join(",")); } catch (e) { }
+if (!fromLoad) fout.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+finder.addEventListener("click", function (ev) {
+var t = ev.target.closest("button");
+if (t && t.hasAttribute("data-find")) show();
+if (t && t.hasAttribute("data-clear")) { grid.querySelectorAll("input").forEach(function (i) { i.checked = false; }); fout.hidden = true; }
+});
+fout.addEventListener("click", function (ev) {
+var t = ev.target.closest("button");
+if (!t || !t.hasAttribute("data-fshare")) return;
+var url = location.origin + location.pathname + "?b=" + picked().join(",");
+var text = "My Costa Rica target birds, and where to find them:";
+var msg = fout.querySelector(".share-msg");
+if (navigator.share) navigator.share({ title: "My Costa Rica target birds", text: text, url: url }).catch(function () { });
+else if (navigator.clipboard) navigator.clipboard.writeText(text + " " + url).then(function () { msg.textContent = "Link copied. Paste it anywhere."; }, function () { msg.textContent = url; });
+else msg.textContent = url;
+});
+var pre = new URLSearchParams(location.search).get("b");
+if (pre) {
+pre.split(",").forEach(function (id) { var el = grid.querySelector('input[value="' + id.replace(/[^a-z]/g, "") + '"]'); if (el) el.checked = true; });
+if (picked().length) show(true);
+}
 }
 })();
