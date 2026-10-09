@@ -90,9 +90,9 @@ try { window.localStorage.setItem("nwd-chooser", JSON.stringify(answers)); } cat
 }
 function planLink(kind) {
 var notes = [];
-if (answers.pain) notes.push("The thing I'd hate most: " + PAIN_ECHO[answers.pain] + ".");
+if (answers.pain) notes.push("The thing I'd hate most: " + PAIN_ECHO[answers.pain].replace("you came for", "I came for") + ".");
 if (answers.stage === "flights") notes.push("Flights are booked: ");
-var q = "plan.html?plan=" + kind + "&len=" + (answers.len || "unsure");
+var q = (kind === "birding" ? "birding.html" : "plan.html") + "?plan=" + kind + "&len=" + (answers.len || "unsure");
 if (notes.length) q += "&note=" + encodeURIComponent(notes.join(" "));
 return q + "#form";
 }

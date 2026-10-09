@@ -1,11 +1,14 @@
 (function () {
 "use strict";
 var page = (window.location.pathname.split("/").pop() || "index.html");
+var footEl = document.getElementById("site-foot");
+var ctaHref = (footEl && footEl.getAttribute("data-cta")) || "plan.html#form";
+var ctaLabel = (footEl && footEl.getAttribute("data-cta-label")) || "Start my trip plan";
 var links = [
-["plan.html", "Plan my trip"],
+["plan.html", "Holiday trips"],
 ["route.html", "Free 10-day route"],
 ["check.html", "Route checker"],
-["birding.html", "Birding"],
+["birding.html", "Birding trips"],
 ["guides.html", "Guides"],
 ["about.html", "About"],
 ["faq.html", "FAQ"]
@@ -13,7 +16,7 @@ var links = [
 var navItems = links.map(function (l) {
 var cur = l[0] === page ? ' aria-current="page"' : "";
 return '<li><a href="' + l[0] + '"' + cur + ">" + l[1] + "</a></li>";
-}).join("") + '<li><a class="nav-cta" href="plan.html#form">Start my trip plan</a></li>';
+}).join("") + '<li><a class="nav-cta" href="' + ctaHref + '">' + ctaLabel + "</a></li>";
 var headSlot = document.getElementById("site-head");
 if (headSlot) {
 headSlot.outerHTML =
@@ -33,13 +36,13 @@ footSlot.outerHTML =
 '<footer class="site-foot"><div class="wrap"><div class="foot-grid">' +
 "<div><h2>Wander Latam</h2><p>Trip plans and guides for people who only get one shot at this trip. " +
 'Questions? Send them through the <a href="plan.html#form">trip form</a> and I\'ll reply within 48 hours.</p></div>' +
-'<div><h2>Plan</h2><ul><li><a href="plan.html">Plan my trip</a></li><li><a href="birding.html">Birding trips</a></li>' +
+'<div><h2>Plan</h2><ul><li><a href="plan.html">Holiday trips</a></li><li><a href="birding.html">Birding trips</a></li>' +
 '<li><a href="route.html">Free 10-day route</a></li><li><a href="check.html">Route checker</a></li><li><a href="guides.html">Guides</a></li></ul></div>' +
 '<div><h2>The small print</h2><ul><li><a href="refunds.html">Refund policy</a></li><li><a href="terms.html">Terms</a></li>' +
 '<li><a href="privacy.html">Privacy</a></li></ul></div></div>' +
 '<p class="small">I plan and recommend. You book everything yourself, direct with the hotels and tour companies. ' +
 "Prices and opening times change, so always check before you book.</p></div></footer>" +
-(noSticky ? "" : '<a class="btn sticky-cta" href="plan.html#form">Start my trip plan</a>');
+(noSticky ? "" : '<a class="btn sticky-cta" href="' + ctaHref + '">' + ctaLabel + "</a>");
 }
 var toggle = document.querySelector(".nav-toggle");
 var nav = document.querySelector(".site-nav");
