@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Costa Rica Route Checker: Will My Itinerary Work? | Wander Latam</title>
+<meta name="description" content="Free Costa Rica route checker. Put in your stops and nights and see your real drive times, how much daylight goes on the road, and what will catch you out.">
+<meta property="og:title" content="Costa Rica Route Checker: Will My Itinerary Work? | Wander Latam">
+<meta property="og:description" content="Free Costa Rica route checker. Put in your stops and nights and see your real drive times, how much daylight goes on the road, and what will catch you out.">
+<meta name="theme-color" content="#123d2e">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+<script src="assets/tools.js" defer></script>
+</head>
+<body>
+<div id="site-head"></div>
+<main id="main">
+
+<section class="page-head">
+  <div class="wrap">
+    <h1>Will my Costa Rica route work?</h1>
+    <p class="lead">Put in where you're staying and for how long. You'll get a score out of 10, your route on a map, your trip day by day, real drive times, the weather for your month, and anything that'll catch you out. Free, and no email needed.</p>
+  </div>
+</section>
+<section style="padding-top:0.5rem">
+  <div class="wrap">
+    <div class="checker" id="checker">
+      <p class="tpl-label">Start from one of my routes, or build your own below</p>
+      <div class="tpl-row"><button type="button" class="tpl" data-template="classic">Classic 10 days</button><button type="button" class="tpl" data-template="week">A week, volcano and beach</button><button type="button" class="tpl" data-template="south">Two weeks, south Pacific</button><button type="button" class="tpl" data-template="birding">Two weeks of birding</button></div>
+      <div class="field"><label for="month">When are you going? <span class="optional">(optional)</span></label><select id="month" data-month><option value="">Not sure yet</option><option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select></div>
+      <div class="field"><label for="arrive">Where do you land?</label><select id="arrive" data-arrive><option value="SJO">San José airport</option><option value="LIR">Liberia airport</option></select></div>
+      <p class="step-title" style="font-size:1.15rem;margin-bottom:0.3rem">Where are you staying, in order?</p>
+      <ol class="stops" data-stops></ol>
+      <button type="button" class="add-stop" data-add>+ Add another stop</button>
+      <div class="field"><label for="depart">Where do you fly home from?</label><select id="depart" data-depart><option value="SJO">San José airport</option><option value="LIR">Liberia airport</option></select></div>
+      <div class="btn-row" style="margin-top:0.5rem"><button type="button" class="btn" data-run>Check my route</button></div>
+      <noscript><p class="form-error">The checker needs JavaScript switched on. You can still <a href="plan.html?plan=check#form">send me your route</a> and I'll check it.</p></noscript>
+    </div>
+    <div id="checker-result" class="checker-result" aria-live="polite" hidden></div>
+    <p class="price-note" style="margin-top:2rem;max-width:44rem">Drive times are typical ones in good conditions, rounded to the half hour, without long stops. Rain, roadworks and traffic can add plenty, so always check on the day. Daylight is counted as 12 hours a day, because it's dark by about six all year round.</p>
+  </div>
+</section>
+</main>
+<div id="site-foot" data-no-sticky></div>
+</body>
+</html>
