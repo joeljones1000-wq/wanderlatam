@@ -817,3 +817,12 @@ body.birding .choice span,body.birding .field input,body.birding .field select,b
 .bird-season{background:#fff6dc;border-left:5px solid var(--toucan);padding:0.8rem 1rem;border-radius:0 10px 10px 0;margin:0 0 1rem}
 .finder-plug{background:#fff;border:1.5px dashed var(--moss);border-radius:12px;padding:0.8rem 1rem;max-width:36rem}
 .score span{text-transform:none}
+.reviews-band{padding:2.5rem 0}
+.reviews-band h2{font-size:clamp(1.4rem,3.6vw,1.9rem)}
+.reviews{display:grid;gap:1rem;max-width:46rem}
+@media (min-width:900px){.reviews{grid-template-columns:repeat(auto-fit,minmax(20rem,1fr));max-width:none}}
+.review{margin:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.2rem 1.3rem;position:relative}
+.review blockquote{margin:0 0 0.8rem;font-size:1.08rem;line-height:1.6}
+.review figcaption{font-family:var(--display);font-size:0.95rem;color:var(--muted)}
+.review figcaption b{color:var(--canopy)}
+.review figcaption span{display:block;font-weight:600;color:var(--moss);font-size:0.88rem;margin-top:0.1rem}
